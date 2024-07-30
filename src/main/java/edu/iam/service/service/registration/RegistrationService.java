@@ -3,7 +3,6 @@ package edu.iam.service.service.registration;
 import edu.iam.service.domain.dto.SignUpRequest;
 import edu.iam.service.domain.entity.Role;
 import edu.iam.service.domain.entity.User;
-import edu.iam.service.domain.service.UserService;
 import edu.iam.service.service.TempUserService;
 import edu.iam.service.service.ValidationService;
 import edu.iam.service.utils.AttemptTracker;
@@ -26,42 +25,39 @@ public class RegistrationService {
 
     private final TempUserService tempUserService;
 
-    public void validateAndRegisterUser(SignUpRequest signUpRequest) {
-        log.info("RegistrationService | Validating user: {}, email: {}", signUpRequest.username(), signUpRequest.email());
+    public void registerUser(SignUpRequest signUpRequest) {
 
-        var email = signUpRequest.email();
-        var username = signUpRequest.username();
-        var password = signUpRequest.password();
-        var confirmPassword = signUpRequest.confirmPassword();
+        log.info("RegistrationService | Register user: {}, email: {}", signUpRequest.username(), signUpRequest.email());
 
-        if (attemptTracker.hasExceededMaxAttempts(email)) {
-            long timeUntilNextAttempt = attemptTracker.getTimeUntilNextAttempt(email);
+        validateUser(signUpRequest);
+
+        tempUserService.saveTempUser(signUpRequest.email(),
+                User.builder()
+                        .email(signUpRequest.email())
+                        .username(signUpRequest.username())
+                        .password(signUpRequest.password())
+                        .role(Role.ROLE_USER)
+                        .build());
+    }
+
+    private void validateUser(SignUpRequest signUpRequest) {
+
+        log.info("RegistrationService | Validate user: {}, email: {}", signUpRequest.username(), signUpRequest.email());
+
+        if (attemptTracker.hasExceededMaxAttempts(signUpRequest.email())) {
+            long timeUntilNextAttempt = attemptTracker.getTimeUntilNextAttempt(signUpRequest.email());
             throw new ValidationException("Attempt count exceeded. Try again in "
                     + (timeUntilNextAttempt / 1000) + " seconds.");
         }
 
         try {
+            validationService.validateUserCredentials(signUpRequest);
 
-            validationService.emailValidation(email);
-
-            validationService.usernameValidation(username);
-
-            validationService.passwordValidation(password, confirmPassword);
-
-            attemptTracker.resetAttempts(email);
+            attemptTracker.resetAttempts(signUpRequest.email());
 
             registrationProducer.registerUser(signUpRequest);
-
-            tempUserService.saveTempUser(signUpRequest.email(),
-                    User.builder()
-                            .email(email)
-                            .username(username)
-                            .password(password)
-                            .role(Role.ROLE_USER)
-                            .build());
-
         } catch (ValidationException exception) {
-            attemptTracker.registerAttempt(email);
+            attemptTracker.registerAttempt(signUpRequest.email());
             throw exception;
         }
     }

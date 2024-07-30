@@ -25,9 +25,9 @@ public class RegistrationController {
     private final ActivationService activationService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signupAndVerifyEmail(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<String> registerUser(@RequestBody SignUpRequest signUpRequest) {
 
-        registrationService.validateAndRegisterUser(signUpRequest);
+        registrationService.registerUser(signUpRequest);
 
         log.info("RegistrationController | Registration success, status: {}, username: {}, email: {}.",
                 HttpStatus.OK.getReasonPhrase(), signUpRequest.username(), signUpRequest.email());

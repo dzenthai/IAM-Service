@@ -16,10 +16,10 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signin")
-    public String signInAndGetToken(@RequestBody SignInRequest signInRequest) {
+    public String authUser(@RequestBody SignInRequest signInRequest) {
 
         log.info("AuthController | User with username: {}, is trying to log in.", signInRequest.username());
 
-        return authService.signInAndGetToken(signInRequest);
+        return authService.authUser(signInRequest);
     }
 }

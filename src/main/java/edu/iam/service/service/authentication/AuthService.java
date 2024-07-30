@@ -23,7 +23,7 @@ public class AuthService {
 
     private final CustomUserDetailsService userDetailsService;
 
-    public String signInAndGetToken(SignInRequest signInRequest) {
+    public String authUser(SignInRequest signInRequest) {
 
         try {
             var authentication = authenticationManager.authenticate(

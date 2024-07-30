@@ -1,6 +1,7 @@
 package edu.iam.service.service;
 
 
+import edu.iam.service.domain.dto.SignUpRequest;
 import edu.iam.service.domain.service.UserService;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,16 @@ public class ValidationService {
 
     private final UserService userService;
 
-    public void usernameValidation(String username) {
+    public void validateUserCredentials(SignUpRequest signUpRequest) {
+
+        validateUsername(signUpRequest.username());
+        validateEmail(signUpRequest.email());
+        validatePassword(signUpRequest.password(), signUpRequest.confirmPassword());
+
+        log.info("ValidationService | Validation success username:{}, email:{}", signUpRequest.username(), signUpRequest.email());
+    }
+
+    private void validateUsername(String username) {
 
         if (userService.findUserByUsername(username) != null) {
             throw new ValidationException("Username is already in use");
@@ -30,7 +40,7 @@ public class ValidationService {
         log.info("ValidationService | Username is valid");
     }
 
-    public void emailValidation(String email) {
+    private void validateEmail(String email) {
 
         if (userService.findUserByEmail(email) != null) {
             throw new ValidationException("Email is already in use");
@@ -44,7 +54,7 @@ public class ValidationService {
         log.info("ValidationService | Email is valid");
     }
 
-    public void passwordValidation(String password, String confirmPassword) {
+    private void validatePassword(String password, String confirmPassword) {
 
         if (password.length() < 8) {
             throw new ValidationException("Password length must be at least 8 characters.");

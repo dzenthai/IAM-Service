@@ -23,28 +23,28 @@ public class ApplicationExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ApplicationException> exception(AuthenticationException ex) {
+    public ResponseEntity<ApplicationException> exceptionHandler(AuthenticationException ex) {
         ApplicationException exception = new ApplicationException(ex.getMessage(), HttpStatus.UNAUTHORIZED.value());
         log.error("Authentication exception | exception: {}, status: {}", ex.getMessage(), exception.getStatus());
         return new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ApplicationException> exception(AccessDeniedException ex) {
+    public ResponseEntity<ApplicationException> exceptionHandler(AccessDeniedException ex) {
         ApplicationException exception = new ApplicationException(ex.getMessage(), HttpStatus.FORBIDDEN.value());
         log.error("Access exception | exception: {}, status: {}", ex.getMessage(), exception.getStatus());
         return new ResponseEntity<>(exception, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ApplicationException> exception(ValidationException ex) {
+    public ResponseEntity<ApplicationException> exceptionHandler(ValidationException ex) {
         ApplicationException exception = new ApplicationException(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
         log.error("Validation exception | exception: {}, status: {}", ex.getMessage(), exception.getStatus());
         return new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ApplicationException> exception(RuntimeException ex) {
+    public ResponseEntity<ApplicationException> exceptionHandler(RuntimeException ex) {
         ApplicationException exception = new ApplicationException(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
         log.error("Generic exception | exception: {}, status: {}", ex.getMessage(), exception.getStatus());
         return new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST);
