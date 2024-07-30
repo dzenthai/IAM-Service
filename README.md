@@ -65,10 +65,15 @@ After installation, configure the application properties (e.g., application.prop
 - **Security Best Practices**: Make sure to regularly update your dependencies and monitor for security vulnerabilities.
 - **Monitoring and Logging**: Consider setting up monitoring and logging tools to keep track of service performance and issues.
 - **Scalability**: For production environments, ensure that you have proper scaling strategies in place for your service and associated dependencies.
+- **Integration with Notification-Service**: The IAM-Service should be used in conjunction with the Notification-Service. Ensure that both services are correctly configured and connected, as the IAM-Service relies on the Notification-Service for sending email notifications.
+
+---
 
 ## **Conclusion**
 
 This service provides robust user authentication and registration functionalities, integrated with notification systems and has mechanisms in place to handle limited attempts for increased security.
+
+---
 
 
 
